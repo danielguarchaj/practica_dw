@@ -12,10 +12,11 @@
 </head>
 <body>
     <div class="container mt-5">
+      <div id="alertMessage"></div>
         <h1>INGRESO DE DATOS</h1>
         <form name="alumno">
             <div class="form-group">
-              <label for="carnet"></label>
+              <label for="carnet">Carnet</label>
               <input type="text" class="form-control" id="carnet" name="carnet">
             </div>
             <div class="form-group">
@@ -26,7 +27,7 @@
                 <label for="apellido">Apellido</label>
                 <input type="text" class="form-control" id="apellido" name="apellido">
               </div>
-            <button type="button" class="btn btn-primary" onclick="insertarDatos(alumno)">Guardar</button>
+            <button type="button" class="btn btn-primary" id="insertAlumno">Guardar</button>
           </form>
           <h1 class="mt-5">Lista de alumnos</h1>
           <form name="busqueda">
@@ -34,8 +35,8 @@
               <label for="buscar"></label>
               <input type="text" class="form-control" id="carnetBusqueda" name="carnetBusqueda" placeholder="Buscar alumno por carnet" >
             </div>
-            <button type="button" class="btn btn-info" id="enviar" onclick="buscarAlumno(busqueda)">Buscar</button>
-            <button type="button" class="btn btn-warning" id="enviar" onclick="getEstudiantes(busqueda)">Ver todos</button>
+            <button type="button" class="btn btn-info" id="enviar">Buscar</button>
+            <button type="button" class="btn btn-warning" id="enviarTodo">Ver todo</button>
           </form>
           <div class="table">
             <table class="table">
@@ -46,7 +47,7 @@
                     <th scope="col">Apellido</th>
                   </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody id="agregar">
                   
                 </tbody>
               </table>
@@ -56,3 +57,114 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+<script>
+  document.querySelector('#enviar').addEventListener('click', e => {
+    let carnet = document.querySelector('#carnetBusqueda').value
+    $.ajax({
+        url: 'getAlumnos.php?buscar='+carnet,
+        type: 'get',
+        dataType: 'JSON',
+        success: function(response){
+            let tbody = document.querySelector('#agregar');
+            console.log(response)
+            tbody.innerHTML = ''
+            response.forEach(el => {
+              tbody.innerHTML += `
+              <tr>
+                <td> <span class="">${el.carnet}</span> </td>
+                <td> <span class="">${el.name}</span> </td>
+                <td> <span class="">${el.lastname}</span> </td>
+              </tr>`
+            })
+        }, 
+        error : function(error){
+          console.log(error)
+        }
+    });
+  })
+
+  document.querySelector('#enviarTodo').addEventListener('click', e => {
+    $.ajax({
+        url: 'getAllAlumnos.php',
+        type: 'get',
+        dataType: 'JSON',
+        success: function(response){
+            let tbody = document.querySelector('#agregar');
+            console.log(response)
+            tbody.innerHTML = ''
+            response.forEach(el => {
+              tbody.innerHTML += `
+              <tr>
+                <td> <span class="">${el.carnet}</span> </td>
+                <td> <span class="">${el.name}</span> </td>
+                <td> <span class="">${el.lastname}</span> </td>
+              </tr>`
+            })
+        }, 
+        error : function(error){
+          console.log(error)
+        }
+    });
+  })
+
+  window.addEventListener('load', function () {
+    $.ajax({
+        url: 'getAllAlumnos.php',
+        type: 'get',
+        dataType: 'JSON',
+        success: function(response){
+            let tbody = document.querySelector('#agregar');
+            console.log(response)
+            tbody.innerHTML = ''
+            response.forEach(el => {
+              tbody.innerHTML += `
+              <tr>
+                <td> <span class="">${el.carnet}</span> </td>
+                <td> <span class="">${el.name}</span> </td>
+                <td> <span class="">${el.lastname}</span> </td>
+              </tr>`
+            })
+        }, 
+        error : function(error){
+          console.log(error)
+        }
+    });
+  })
+
+  document.querySelector('#insertAlumno').addEventListener('click', e => {
+    let carnet = window.carnet.value
+    let nombre = window.nombre.value
+    let apellido = window.apellido.value
+    let alert = window.alertMessage
+    let body = {
+      'carnet' : carnet,
+      'name' : nombre,
+      'lastname' : apellido
+    }
+
+    console.log(body)
+    $.ajax({
+        url: 'setAlumnos.php',
+        type: 'post',
+        dataType: 'JSON',
+        data: body,
+        success: function(response){
+            alert.innerHTML = `
+            <div class="alert alert-${(response.status) ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
+              ${response.message}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            `
+            console.log(response)
+        },
+        error : function(error){
+          console.log(error)
+        }
+    });
+
+  })
+
+
+</script>
