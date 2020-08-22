@@ -1,24 +1,9 @@
 function getEstudiantes() {
     $.ajax({
-        url: '',
-        type: "POST",
-        data: {
-            carnet: alumno.carnet.value,
-            nombre: alumno.nombre.value,
-            apellido: alumno.apellido.value
-        },
+        url: 'connection/listaAlumnos.php',
+        type: "GET",
         success: function(response){
-            let alumnosHtml = ''
-            for (const alumno of response.data) {
-                alumnosHtml += `
-                <tr>
-                  <td> <span class="">${alumno.carnet}</span> </td>
-                  <td> <span class="">${alumno.nombre}</span> </td>
-                  <td> <span class="">${alumno.apellido}</span> </td>
-                </tr>
-              `
-            }
-            document.getElementById('tbody').innerHTML = alumnosHtml
+            document.getElementById('tbody').innerHTML = response
         },
         error: function(error) {
             console.error(error)
@@ -29,7 +14,7 @@ function getEstudiantes() {
 
 function insertarDatos (alumno) {
     $.ajax({
-        url: '',
+        url: 'connection/save.php',
         type: "POST",
         data: {
             carnet: alumno.carnet.value,
@@ -48,28 +33,18 @@ function insertarDatos (alumno) {
 }
 
 function buscarAlumno (busqueda) {
-    let carnet = document.querySelector('#carnetBusqueda').value
     $.ajax({
-        url: './getAlumno.php?',
-        type: "get",
-        data: {
-            buscar: carnet,
-        },
+        url: 'connection/getAlumno.php?carnet='+busqueda.carnetBusqueda.value,
+        type: 'get',
+        dataType: 'JSON',
         success: function(response){
-            console.log(response)
-            document.getElementById('tbody').innerHTML = `
-            <tr>
-                <td> <span class="">${resopnse.data.carnet}</span> </td>
-                <td> <span class="">${resopnse.data.nombre}</span> </td>
-                <td> <span class="">${resopnse.data.apellido}</span> </td>
-            </tr>
-            `
+          document.getElementById('tbody').innerHTML = response
         },
         error: function(error) {
-            console.error(error)
-            alert('Error de servidor, intente mas tarde.')
+            document.getElementById('tbody').innerHTML = error.responseText
+            console.log(error)
         }
-    })
+    });
 }
 
 getEstudiantes();

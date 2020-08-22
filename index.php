@@ -34,7 +34,8 @@
               <label for="buscar"></label>
               <input type="text" class="form-control" id="carnetBusqueda" name="carnetBusqueda" placeholder="Buscar alumno por carnet" >
             </div>
-            <button type="button" class="btn btn-info" id="enviar" >Buscar</button>
+            <button type="button" class="btn btn-info" id="enviar" onclick="buscarAlumno(busqueda)">Buscar</button>
+            <button type="button" class="btn btn-warning" id="enviar" onclick="getEstudiantes(busqueda)">Ver todos</button>
           </form>
           <div class="table">
             <table class="table">
@@ -45,7 +46,7 @@
                     <th scope="col">Apellido</th>
                   </tr>
                 </thead>
-                <tbody id="agregar">
+                <tbody id="tbody">
                   
                 </tbody>
               </table>
@@ -55,27 +56,3 @@
     <script src="js/script.js"></script>
 </body>
 </html>
-<script>
-  document.querySelector('#enviar').addEventListener('click', e => {
-    let carnet = document.querySelector('#carnetBusqueda').value
-    $.ajax({
-        url: 'getAlumnos.php?buscar='+carnet,
-        type: 'get',
-        dataType: 'JSON',
-        success: function(response){
-            let tbody = document.querySelector('#agregar');
-            console.log(response)
-            tbody.innerHTML = ''
-            response.forEach(el => {
-              tbody.innerHTML += `
-              <tr>
-                <td> <span class="">${el.carnet}</span> </td>
-                <td> <span class="">${el.nombre}</span> </td>
-                <td> <span class="">${el.apellido}</span> </td>
-              </tr>`
-            })
-        }
-    });
-
-  })
-</script>

@@ -1,6 +1,6 @@
 <?php
     $host = "localhost";
-    $database = "tarea_desarrollo";
+    $database = "ejercicio_dw";
     $username = "root";
     $password = "";
 
