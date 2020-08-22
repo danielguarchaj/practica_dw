@@ -12,6 +12,7 @@
 </head>
 <body>
     <div class="container mt-5">
+      <div id="alertMessage"></div>
         <h1>INGRESO DE DATOS</h1>
         <form name="alumno">
             <div class="form-group">
@@ -26,7 +27,7 @@
                 <label for="apellido">Apellido</label>
                 <input type="text" class="form-control" id="apellido" name="apellido">
               </div>
-            <button type="button" class="btn btn-primary" onclick="insertarDatos(alumno)">Guardar</button>
+            <button type="button" class="btn btn-primary" id="insertAlumno">Guardar</button>
           </form>
           <h1 class="mt-5">Lista de alumnos</h1>
           <form name="busqueda">
@@ -70,12 +71,51 @@
               tbody.innerHTML += `
               <tr>
                 <td> <span class="">${el.carnet}</span> </td>
-                <td> <span class="">${el.nombre}</span> </td>
-                <td> <span class="">${el.apellido}</span> </td>
+                <td> <span class="">${el.name}</span> </td>
+                <td> <span class="">${el.lastname}</span> </td>
               </tr>`
             })
+        }, 
+        error : function(error){
+          console.log(error)
+        }
+    });
+  })
+
+  document.querySelector('#insertAlumno').addEventListener('click', e => {
+    let carnet = window.carnet.value
+    let nombre = window.nombre.value
+    let apellido = window.apellido.value
+    let alert = window.alertMessage
+    let body = {
+      'carnet' : carnet,
+      'name' : nombre,
+      'lastname' : apellido
+    }
+
+    console.log(body)
+    $.ajax({
+        url: 'setAlumnos.php',
+        type: 'post',
+        dataType: 'JSON',
+        data: body,
+        success: function(response){
+            alert.innerHTML = `
+            <div class="alert alert-${(response.status) ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
+              ${response.message}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            `
+            console.log(response)
+        },
+        error : function(error){
+          console.log(error)
         }
     });
 
   })
+
+
 </script>
