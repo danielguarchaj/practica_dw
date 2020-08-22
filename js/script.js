@@ -48,13 +48,15 @@ function insertarDatos (alumno) {
 }
 
 function buscarAlumno (busqueda) {
+    let carnet = document.querySelector('#carnetBusqueda').value
     $.ajax({
-        url: '',
-        type: "POST",
+        url: './getAlumno.php?',
+        type: "get",
         data: {
-            carnet: busqueda.carnet.value,
+            buscar: carnet,
         },
         success: function(response){
+            console.log(response)
             document.getElementById('tbody').innerHTML = `
             <tr>
                 <td> <span class="">${resopnse.data.carnet}</span> </td>

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Practica Desarrollo web</title>    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container mt-5">
@@ -28,9 +32,9 @@
           <form name="busqueda">
             <div class="form-group">
               <label for="buscar"></label>
-              <input type="text" class="form-control" id="carnetBusqueda" name="carnetBusqueda" placeholder="Buscar alumno por carnet" onclick="buscarAlumno(busqueda)">
+              <input type="text" class="form-control" id="carnetBusqueda" name="carnetBusqueda" placeholder="Buscar alumno por carnet" >
             </div>
-            <button type="button" class="btn btn-info">Buscar</button>
+            <button type="button" class="btn btn-info" id="enviar" >Buscar</button>
           </form>
           <div class="table">
             <table class="table">
@@ -41,7 +45,8 @@
                     <th scope="col">Apellido</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="agregar">
+                  
                 </tbody>
               </table>
           </div>
@@ -50,3 +55,27 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+<script>
+  document.querySelector('#enviar').addEventListener('click', e => {
+    let carnet = document.querySelector('#carnetBusqueda').value
+    $.ajax({
+        url: 'getAlumnos.php?buscar='+carnet,
+        type: 'get',
+        dataType: 'JSON',
+        success: function(response){
+            let tbody = document.querySelector('#agregar');
+            console.log(response)
+            tbody.innerHTML = ''
+            response.forEach(el => {
+              tbody.innerHTML += `
+              <tr>
+                <td> <span class="">${el.carnet}</span> </td>
+                <td> <span class="">${el.nombre}</span> </td>
+                <td> <span class="">${el.apellido}</span> </td>
+              </tr>`
+            })
+        }
+    });
+
+  })
+</script>

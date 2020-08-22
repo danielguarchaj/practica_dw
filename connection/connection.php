@@ -10,8 +10,5 @@
         die("Connection falided: " . mysqli_connect_error());
     }
 
-    echo "Connected successfully";
-
-    mysqli_close($conn);
 
 ?>
